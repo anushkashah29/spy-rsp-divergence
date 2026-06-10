@@ -14,33 +14,6 @@ the equal-weighted index subsequently outperforms the cap-weighted index over
 
 ---
 
-## Setup
-
-```bash
-# 1. Clone / enter the project
-cd spy_rsp_divergence
-
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Download data (saves to data/raw/)
-python src/download.py
-
-# 5. Run full analysis
-python src/analysis.py
-python src/signals.py
-python src/backtest.py
-
-# 6. Open notebook
-jupyter notebook notebooks/analysis.ipynb
-```
-
----
-
 ## Key Results
 
 | Trigger (RSP/SPY Z-score < −2) | SPY forward return | RSP forward return |
