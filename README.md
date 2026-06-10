@@ -9,8 +9,8 @@ testing the hypothesis that extreme divergences mean-revert over time.
 ## Hypothesis
 
 When the RSP/SPY performance ratio falls to historical extremes (Z-score < −2),
-the equal-weighted index subsequently outperforms the cap-weighted index over
-6-, 12-, and 24-month horizons — a mean reversion trade.
+the equal-weighted index then outperforms the cap-weighted index over
+6-, 12-, and 24-month horizons aka a mean reversion trade.
 
 ---
 
