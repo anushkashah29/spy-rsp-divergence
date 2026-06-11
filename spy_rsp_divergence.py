@@ -233,7 +233,7 @@ csv_path = "spy_rsp_episodes.csv"
 results.to_csv(csv_path, index=False)
 print(f"Full episode data exported → {csv_path}")
 
-# ── Regime-grouped summary (clean output) ────────────────────────────────────
+# ── Regime-grouped summary ────────────────────────────────────
 results["Year"] = pd.to_datetime(results["Entry Date"]).dt.year
 results["Regime"] = results["Year"].apply(lambda y:
     "GFC Recovery"           if y <= 2010 else
