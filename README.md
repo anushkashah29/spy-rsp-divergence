@@ -8,16 +8,16 @@ A quantitative project analyzing the performance gap between the cap-weighted S&
 
 The S&P 500 can be tracked two ways:
 
-- **Cap-weighted (SPY):** Each stock's weight is proportional to its market cap. The largest companies — Apple, Microsoft, Nvidia — dominate returns. This acts as a momentum strategy, letting winners ride.
-- **Equal-weighted (RSP):** Every stock gets the same weight (~0.2%), regardless of size. RSP rebalances quarterly, trimming winners and buying laggards, approximating the return of the "average" stock.
+- **Cap-weighted (SPY):** Each stock's weight is proportional to its market cap. The largest companies like Apple, Microsoft and Nvidia dominate returns. 
+- **Equal-weighted (RSP):** Every stock gets the same weight (~0.2%), rebalancing quarterly to maintain equal exposure across all stocks. RSP approximates the return of the average stock in the index.
 
-When a handful of mega-caps drive returns, SPY pulls ahead of RSP. The central question of this project: **when that gap reaches a statistical extreme, does it revert?**
+When a handful of mega-caps drive returns, SPY pulls ahead of RSP. The main question of this project is: **when that gap reaches a statistical extreme, does it mean-revert?**
 
 ---
 
 ## Hypothesis
 
-> When the performance gap between SPY and RSP reaches a statistically extreme level (Z-score ≤ -2.0, indicating SPY is far ahead of RSP), the divergence will mean-revert and RSP will outperform going forward.
+> When the performance gap between SPY and RSP reaches a statistically extreme level (rolling Z-score ≤ -2.0, meaning SPY is far ahead of RSP), the divergence will mean-revert and RSP will outperform going forward.
 
 ---
 
@@ -32,7 +32,7 @@ When a handful of mega-caps drive returns, SPY pulls ahead of RSP. The central q
 
 **1. Relative Performance Ratio**
 
-Computed the daily ratio `RSP / SPY` to track which index is outperforming over time. Values below the historical mean indicate SPY dominance.
+Computed the daily ratio `RSP / SPY` to track which index is outperforming over time. Values below the historical mean show SPY dominance.
 
 **2. Log Spread & Rolling Z-Score**
 
@@ -42,17 +42,17 @@ Calculated the log spread `log(RSP) - log(SPY)` and applied a 252-day (1-year) r
 Z = (Spread - Rolling Mean) / Rolling Std
 ```
 
-A Z-score ≤ -2.0 flags a statistically extreme episode of SPY dominance — the entry signal for the hypothesis test.
+A Z-score ≤ -2.0 flags a statistically extreme episode of SPY dominance, which is the entry signal for the hypothesis test.
 
 **3. Engle-Granger Cointegration Test**
 
-Tested whether SPY and RSP are cointegrated (i.e., bound by a long-run equilibrium that divergences must revert to). Run two ways:
+Tested whether SPY and RSP are cointegrated (bound by a long-run equilibrium that divergences must revert to). Run two ways:
 - Full-period test (2007–present)
 - Rolling 3-year window test (monthly steps) to detect regime changes
 
 **4. Forward Return Analysis**
 
-For every day the Z-score crossed below -2.0 (515 trading days total), measured the forward returns of SPY and RSP at 6-month, 12-month, and 24-month horizons. The RSP Edge (RSP return minus SPY return) is the primary metric — a positive edge confirms mean-reversion.
+For every day the Z-score crossed below -2.0 (515 trading days total), measured the forward returns of SPY and RSP at 6-month, 12-month, and 24-month horizons. The RSP Edge (RSP return minus SPY return) is the main metric. A positive edge confirms mean-reversion.
 
 **5. Regime Analysis**
 
@@ -69,7 +69,7 @@ Grouped all signal days into six historical regimes to test whether mean-reversi
 | Full-period Engle-Granger (2007–2026) | p = 0.77 ⚠️ Not cointegrated |
 | Rolling 3-year windows | Cointegrated in only 9.6% of windows |
 
-The full-period cointegration test fails, meaning there is no single stable long-run equilibrium between SPY and RSP across the entire 19-year period. The rolling test reveals why — the relationship switches on and off across market regimes rather than holding consistently. This is an important caveat: mean-reversion cannot be characterized as a statistical law, only as a tendency.
+The full-period cointegration test fails, meaning there is no single stable long-run equilibrium between SPY and RSP across the entire 19-year period. The rolling test reveals it's due to the relationship switching on and off across market regimes rather than holding consistently. 
 
 ### Z-Score Signal Summary
 
@@ -95,27 +95,24 @@ The asymmetry — 515 SPY-dominant days vs 152 RSP-dominant days — reflects th
 
 ## Conclusion
 
-The hypothesis is supported on average — RSP outperformed SPY by +2.0% at 12 months and +1.7% at 24 months across all 515 signal days. However, the regime table reveals that this average masks fundamentally different outcomes across market environments.
+The hypothesis is **supported on average.** RSP outperformed SPY by **+2.0% at 12 months** and **+1.7% at 24 months** across all 515 signal days. However, the regime table shows the outcome depended on why the divergence happened, not just how large it was.
 
-**Mean-reversion was strong after dislocations.** Following the GFC, RSP outperformed SPY by +13.8% at 12 months and +25.4% at 24 months. Following the COVID crash, the edge was +4.0% at 12 months and +5.6% at 24 months. In both cases, an acute market shock created temporary distortions that quickly unwound.
+**It worked best after market crashes.** After the 2008 financial crisis, RSP beat SPY by **+13.8% over the next year** and **+25.4% over two years.** After the COVID crash, RSP beat SPY by **+4.0% at 12 months.** In both cases, the market had sold off broadly, and when it recovered, smaller and mid-size stocks bounced back harder than the mega-caps.
 
-**Mean-reversion failed during structural concentration.** During the Mega-Cap Buildup regime (2014–2018), 200 signal days produced a -5.6% RSP edge at 24 months — SPY dominance persisted despite the Z-score signal. The AI Concentration regime (2021–2023) was worse, producing a -15.8% RSP edge at 24 months, the worst outcome in the dataset.
+**It failed when mega-caps were genuinely dominant.** Between 2014 and 2018, when tech stocks were steadily taking over the market, the signal fired 200 times and RSP still underperformed by **-5.6% over two years.** During the AI boom from 2021 to 2023, when Nvidia, Microsoft, and Meta were driving the entire market, RSP underperformed by **-15.8% over two years.** 
 
-**The Z-score alone is insufficient as a trading signal.** The critical distinction is between *dislocation-driven* divergences, where mega-cap outperformance reflects temporary risk-off behavior, and *structural-driven* divergences, where mega-cap outperformance reflects genuine and sustained earnings superiority (e.g., AI-driven revenue growth at Nvidia, Microsoft, Meta). A Z-score of -2.0 looks identical in both cases, but the forward outcomes are opposite.
+**The Z-score alone is not enough.** A Z-score of -2.0 looks identical whether SPY is ahead because of a temporary panic or because a handful of companies are earning extraordinary returns. Those two situations have opposite outcomes for RSP. To use this signal in practice, you need a second indicator such as market breadth, sector rotation trends, or Fed policy stance.
 
-A more robust framework would pair the Z-score signal with a regime-detection indicator — such as market breadth (the percentage of stocks outperforming the index), sector rotation trends, or Fed policy stance — to distinguish dislocations from structural shifts before acting on the divergence.
-
-> *Extreme divergences between SPY and RSP do mean-revert on average, but the signal is regime-dependent rather than unconditional. The Z-score captures the magnitude of divergence but not its cause — and cause is everything.*
+> *Extreme divergences between SPY and RSP do mean-revert on average, but the signal is regime-dependent, not unconditional. The Z-score only captures the magnitude of divergence.*
 
 ---
 
-## Caveats
+### Caveats
 
-- **Cointegration is weak over the full period.** The statistical foundation for guaranteed mean-reversion does not hold across the entire 2007–2026 dataset. Results should be interpreted as empirical tendencies, not laws.
-- **Overlapping observations.** The 515 signal days are not independent — many belong to the same sustained episode (e.g., 60 consecutive days during the GFC). The regime table partially addresses this by grouping by period, but averages are still influenced by the duration of each episode.
-- **Survivorship and look-ahead bias.** Regime labels were assigned with the benefit of hindsight. In real time, identifying whether a divergence is dislocation-driven or structural is non-trivial.
-- **Transaction costs excluded.** RSP rebalances quarterly, incurring higher turnover and transaction costs than SPY. A live strategy would need to account for this drag on the RSP edge.
-- **Recent data is incomplete.** Signal days from 2024–2025 do not yet have full 12M and 24M forward return data, making the "Recent" regime preliminary.
+- **The statistical test for mean-reversion did not pass.** The Engle-Granger cointegration test failed (p = 0.77), and the rolling version found a stable relationship in only 9.6% of three-year windows. Mean-reversion is not a certianty.
+- **The 515 signal days are not 515 independent events.** Many of the signal days are within the same episode (ex: 60 consecutive days during the GFC all count separately). The regime table helps groups these days, but the true sample size is smaller than it appears.
+- **Trading costs are not included.** RSP rebalances every quarter to maintain equal weights, generating more transaction costs than SPY. A real strategy would earn somewhat less than the RSP Edge numbers suggest.
+- **Recent results are incomplete.** Signal days from 2024 onward do not yet have full 12 and 24 month forward returns, so the Recent regime numbers will change as more data comes in.
 
 ---
 
